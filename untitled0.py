@@ -139,18 +139,19 @@ while word_is_guessed == False:
     print('Available letters:' ,get_available_letters(guessed))
     guessed_alphabet, num_of_warnings = get_input(num_of_warnings)
     
-    if num_of_warnings == 0 :
+    if num_of_warnings <= 0 :
         num_of_gusses -= 1
     
     guessed.append(guessed_alphabet)
     guessed_list = get_guessed_word(word,guessed)
     word_is_guessed = is_word_guessed(word,guessed)
-    
-    if word.find(guessed_alphabet) != -1:
-        print('Good guess: ', guessed_list)
-    elif word.find(guessed_alphabet) == -1:
-        print('Oops! That is not in my word: ', guessed_list)
-        num_of_gusses -=1
+    if guessed_alphabet.isalpha() == True:
+        
+        if word.find(guessed_alphabet) != -1:
+            print('Good guess: ', guessed_list)
+        elif word.find(guessed_alphabet) == -1:
+            print('Oops! That is not in my word: ', guessed_list)
+            num_of_gusses -=1
     if num_of_gusses == 0:
         break
 
