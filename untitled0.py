@@ -73,7 +73,7 @@ def get_guessed_word(secret_word, letters_guessed):
     # FILL IN YOUR CODE HERE AND DELETE "pass"
     ret_str =""
     index = 0
-    let_con = 0
+    let_con = 0 #used to check if an alphabet is in the guessed_string
    
     for char1 in secret_word:
        for char2 in letters_guessed:
@@ -127,12 +127,33 @@ word = 'aeroplane'
 num_of_gusses = 6
 num_of_warnings = 3
 guessed = []
+word_is_guessed = False
 print('Welcome to the game Hangman!')
-print('I am thinking of a word that is ',len(word),' letters long')
 
-print('Remaining guesses ', num_of_gusses,)
-print('Available letters:' ,get_available_letters(guessed))
-guessed, warnings = get_input(num_of_warnings)
+while word_is_guessed == False:
+    
+    print('I am thinking of a word that is ',len(word),' letters long')
+    
+    print('Remaining guesses ', num_of_gusses,)
+    print('Remaining Warnings ', num_of_warnings,)
+    print('Available letters:' ,get_available_letters(guessed))
+    guessed_alphabet, num_of_warnings = get_input(num_of_warnings)
+    
+    if num_of_warnings == 0 :
+        num_of_gusses -= 1
+    
+    guessed.append(guessed_alphabet)
+    guessed_list = get_guessed_word(word,guessed)
+    word_is_guessed = is_word_guessed(word,guessed)
+    
+    if word.find(guessed_alphabet) != -1:
+        print('Good guess: ', guessed_list)
+    elif word.find(guessed_alphabet) == -1:
+        print('Oops! That is not in my word: ', guessed_list)
+        num_of_gusses -=1
+    if num_of_gusses == 0:
+        break
+
 
 
 #print(is_word_guessed(word,guessed))
