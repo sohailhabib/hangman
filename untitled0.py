@@ -109,11 +109,21 @@ def get_available_letters(letters_guessed):
 
     return available_letters
 
-def get_input(warnings,guesses):
+def get_input(warnings,guesses,avail_alphabet):
     '''Function for getting user input
     '''
     user_guess = input('Enter your guess ')
     is_alpha = user_guess.isalpha()
+    already_gussed = avail_alphabet.find(user_guess)
+    if is_alpha == True:
+        if already_gussed == -1:
+            print('This alphabet is already guessed')
+            warnings -=1
+            if warnings <= 0:
+                guesses -= 1
+                warnings = 0
+        
+    
     if is_alpha == False:
         print('Please Enter an alphabet')
         warnings -=1
@@ -141,7 +151,7 @@ while word_is_guessed == False:
     print('Remaining Warnings ', num_of_warnings,)
     available_letters = get_available_letters(guessed)
     print('Available letters:' , available_letters)
-    guessed_alphabet, num_of_warnings, num_of_gusses = get_input(num_of_warnings,num_of_gusses)
+    guessed_alphabet, num_of_warnings, num_of_gusses = get_input(num_of_warnings,num_of_gusses,available_letters)
     
        
     guessed.append(guessed_alphabet)
