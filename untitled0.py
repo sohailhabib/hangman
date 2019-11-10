@@ -115,6 +115,7 @@ def get_input(warnings,guesses,avail_alphabet):
     user_guess = input('Enter your guess ')
     is_alpha = user_guess.isalpha()
     already_gussed = avail_alphabet.find(user_guess)
+    #if user has already guessed the aplhabet then they lose a guess
     if is_alpha == True:
         if already_gussed == -1:
             print('This alphabet is already guessed')
@@ -141,13 +142,14 @@ num_of_gusses = 6
 num_of_warnings = 3
 guessed = []
 word_is_guessed = False
+vowels = 'aeiou'
 print('Welcome to the game Hangman!')
 
 while word_is_guessed == False:
     
     print('I am thinking of a word that is ',len(word),' letters long')
     
-    print('Remaining guesses ', num_of_gusses,)
+    print('You have ', num_of_gusses,' gusses left')
     print('Remaining Warnings ', num_of_warnings,)
     available_letters = get_available_letters(guessed)
     print('Available letters:' , available_letters)
@@ -163,7 +165,12 @@ while word_is_guessed == False:
             print('Good guess: ', guessed_list)
         elif word.find(guessed_alphabet) == -1:
             print('Oops! That is not in my word: ', guessed_list)
-            num_of_gusses -=1
+            if vowels.find(guessed_alphabet) != -1:
+                print('You failed to guess a vowel so you lose 2 gusses')
+                if available_letters.find(guessed_alphabet) != -1:
+                    num_of_gusses -=2
+            else:
+                num_of_gusses -=1
     if num_of_gusses == 0:
         break
 
