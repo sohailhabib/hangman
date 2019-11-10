@@ -175,7 +175,8 @@ while word_is_guessed == False:
                 if available_letters.find(guessed_alphabet) != -1:
                     num_of_gusses -=1
     if num_of_gusses < 0:
-        print('YOU HAVE RUN OUT OF GUSSES')
+        print('YOU HAVE RUN OUT OF GUSSES SO YOU LOSE THE GAME')
+        print ('The word that I was thinking was',word)
         break
 
 
