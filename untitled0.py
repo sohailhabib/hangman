@@ -113,6 +113,7 @@ def get_input(warnings,guesses,avail_alphabet):
     '''Function for getting user input
     '''
     user_guess = input('Enter your guess ')
+    user_guess = user_guess.lower()
     is_alpha = user_guess.isalpha()
     already_gussed = avail_alphabet.find(user_guess)
     #if user has already guessed the aplhabet then they lose a guess
@@ -120,7 +121,7 @@ def get_input(warnings,guesses,avail_alphabet):
         if already_gussed == -1:
             print('This alphabet is already guessed')
             warnings -=1
-            if warnings <= 0:
+            if warnings < 0:
                 guesses -= 1
                 warnings = 0
         
@@ -131,10 +132,8 @@ def get_input(warnings,guesses,avail_alphabet):
         if warnings <= 0:
             guesses -= 1
             warnings = 0
-    
-    else:
-        user_guess = user_guess.lower()
-    
+   
+  
     return user_guess, warnings, guesses
 
 word = 'aeroplane'
@@ -144,11 +143,10 @@ guessed = []
 word_is_guessed = False
 vowels = 'aeiou'
 print('Welcome to the game Hangman!')
+print('I am thinking of a word that is ',len(word),' letters long')
 
 while word_is_guessed == False:
-    
-    print('I am thinking of a word that is ',len(word),' letters long')
-    
+     
     print('You have ', num_of_gusses,' gusses left')
     print('Remaining Warnings ', num_of_warnings,)
     available_letters = get_available_letters(guessed)
@@ -163,15 +161,21 @@ while word_is_guessed == False:
         
         if word.find(guessed_alphabet) != -1:
             print('Good guess: ', guessed_list)
+            print('_ _ _ _ _ _ _ _ _ _ _\n')
+            
         elif word.find(guessed_alphabet) == -1:
             print('Oops! That is not in my word: ', guessed_list)
+            print('_ _ _ _ _ _ _ _ _ _ _\n')
+            
             if vowels.find(guessed_alphabet) != -1:
-                print('You failed to guess a vowel so you lose 2 gusses')
                 if available_letters.find(guessed_alphabet) != -1:
+                    print('You failed to guess a vowel so you lose 2 gusses')
                     num_of_gusses -=2
             else:
-                num_of_gusses -=1
-    if num_of_gusses == 0:
+                if available_letters.find(guessed_alphabet) != -1:
+                    num_of_gusses -=1
+    if num_of_gusses < 0:
+        print('YOU HAVE RUN OUT OF GUSSES')
         break
 
 
