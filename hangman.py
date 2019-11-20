@@ -138,8 +138,10 @@ def get_input(warnings,guesses,avail_alphabet):
     #if user has already guessed the aplhabet then they lose a guess
     if is_alpha == True:
         if already_gussed == -1:
-            print('This alphabet is already guessed')
             warnings -=1
+            if (warnings >= 0):
+                print('Oops! You''ve alreadt giessed that letter. You have ',warnings,'warnings left:')
+           
             if warnings < 0:
                 guesses -= 1
                 warnings = 0
@@ -155,6 +157,15 @@ def get_input(warnings,guesses,avail_alphabet):
   
     return user_guess, warnings, guesses
 
+def calc_score(guess_remain,word):
+    '''
+    Function for calculating the game score
+    '''
+    word_set = set(word)
+    unique_letters = len(word_set)
+    total_score = guess_remain*unique_letters
+    
+    return total_score
 
 
 def hangman(secret_word):
@@ -188,14 +199,17 @@ def hangman(secret_word):
     guessed = []
     word_is_guessed = False
     vowels = 'aeiou'
-   
+    first_run =  True
     print('Welcome to the game Hangman!')
     print('I am thinking of a word that is ',len(secret_word),' letters long')
     
     while word_is_guessed == False:
          
         print('You have ', num_of_gusses,' gusses left')
-        print('Remaining Warnings ', num_of_warnings,)
+        if(first_run == True):
+            print('Remaining Warnings ', num_of_warnings,)
+            first_run = False
+            
         available_letters = get_available_letters(guessed)
         print('Available letters:' , available_letters)
         guessed_alphabet, num_of_warnings, num_of_gusses = get_input(num_of_warnings,num_of_gusses,available_letters)
@@ -223,6 +237,7 @@ def hangman(secret_word):
                         num_of_gusses -=1
         if word_is_guessed == True:
             print('Your Guess is correct you won the word was',secret_word)
+            print('Your score is',calc_score(num_of_gusses,secret_word))
         if num_of_gusses < 0:
             print('YOU HAVE RUN OUT OF GUSSES SO YOU LOSE THE GAME')
             print ('The word that I was thinking was',secret_word)

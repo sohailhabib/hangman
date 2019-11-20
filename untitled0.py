@@ -119,8 +119,9 @@ def get_input(warnings,guesses,avail_alphabet):
     #if user has already guessed the aplhabet then they lose a guess
     if is_alpha == True:
         if already_gussed == -1:
-            print('This alphabet is already guessed')
             warnings -=1
+            if (warnings >= 0):
+                print('Oops! You''ve alreadt giessed that letter. You have ',warnings,'warnings left:')
             if warnings < 0:
                 guesses -= 1
                 warnings = 0
@@ -136,7 +137,14 @@ def get_input(warnings,guesses,avail_alphabet):
   
     return user_guess, warnings, guesses
 
-word = 'aeroplane'
+def calc_score(guess_remain,word):
+    word_set = set(word)
+    unique_letters = len(word_set)
+    total_score = guess_remain*unique_letters
+    
+    return total_score
+
+word = 'tact'
 num_of_gusses = 6
 num_of_warnings = 3
 guessed = []
@@ -144,11 +152,15 @@ word_is_guessed = False
 vowels = 'aeiou'
 print('Welcome to the game Hangman!')
 print('I am thinking of a word that is ',len(word),' letters long')
-
+first_run =  True
 while word_is_guessed == False:
      
     print('You have ', num_of_gusses,' gusses left')
-    print('Remaining Warnings ', num_of_warnings,)
+    if (first_run == True):
+        print('Remaining Warnings ', num_of_warnings,)
+        first_run = False        
+    
+        
     available_letters = get_available_letters(guessed)
     print('Available letters:' , available_letters)
     guessed_alphabet, num_of_warnings, num_of_gusses = get_input(num_of_warnings,num_of_gusses,available_letters)
@@ -174,6 +186,9 @@ while word_is_guessed == False:
             else:
                 if available_letters.find(guessed_alphabet) != -1:
                     num_of_gusses -=1
+    if word_is_guessed == True:
+            print('Your Guess is correct you won the word was',word)
+            print('Your score is',calc_score(num_of_gusses,word))
     if num_of_gusses < 0:
         print('YOU HAVE RUN OUT OF GUSSES SO YOU LOSE THE GAME')
         print ('The word that I was thinking was',word)
