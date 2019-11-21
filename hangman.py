@@ -128,34 +128,38 @@ def get_available_letters(letters_guessed):
 
     return available_letters
 
-def get_input(warnings,guesses,avail_alphabet):
+def get_input(warnings,guesses,avail_alphabet,warnings_over):
     '''Function for getting user input
     '''
     user_guess = input('Enter your guess ')
     user_guess = user_guess.lower()
     is_alpha = user_guess.isalpha()
     already_gussed = avail_alphabet.find(user_guess)
+
     #if user has already guessed the aplhabet then they lose a guess
     if is_alpha == True:
         if already_gussed == -1:
             warnings -=1
-            if (warnings >= 0):
-                print('Oops! You''ve alreadt giessed that letter. You have ',warnings,'warnings left:')
-           
+
+                       
             if warnings < 0:
                 guesses -= 1
                 warnings = 0
+                warnings_over = True
         
     
     if is_alpha == False:
-        print('Please Enter an alphabet')
         warnings -=1
-        if warnings <= 0:
+        
+        if warnings < 0:
             guesses -= 1
             warnings = 0
+            warnings_over = True
+            
+
    
   
-    return user_guess, warnings, guesses
+    return user_guess, warnings, guesses,warnings_over
 
 def calc_score(guess_remain,word):
     '''
@@ -198,6 +202,7 @@ def hangman(secret_word):
     num_of_warnings = 3
     guessed = []
     word_is_guessed = False
+    warnings_over = False
     vowels = 'aeiou'
     first_run =  True
     print('Welcome to the game Hangman!')
@@ -212,12 +217,13 @@ def hangman(secret_word):
             
         available_letters = get_available_letters(guessed)
         print('Available letters:' , available_letters)
-        guessed_alphabet, num_of_warnings, num_of_gusses = get_input(num_of_warnings,num_of_gusses,available_letters)
+        guessed_alphabet, num_of_warnings, num_of_gusses, warnings_over = get_input(num_of_warnings,num_of_gusses,available_letters,warnings_over)
         
            
         guessed.append(guessed_alphabet)
         guessed_list = get_guessed_word(secret_word,guessed)
         word_is_guessed = is_word_guessed(secret_word,guessed)
+        
         if guessed_alphabet.isalpha() == True:
             
             if secret_word.find(guessed_alphabet) != -1:
@@ -235,10 +241,41 @@ def hangman(secret_word):
                 else:
                     if available_letters.find(guessed_alphabet) != -1:
                         num_of_gusses -=1
+#This part handels the messages if the letter is already guessed
+#        if num_of_warnings >= 0:
+#            warnings_over = False
+#        else:
+#            warnings_over = True
+#        
+        already_guessed = available_letters.find(guessed_alphabet)
+        if already_guessed != -1:
+            already_guessed_status = False
+        elif already_guessed == -1:
+            already_guessed_status = True
+            
+        if (guessed_alphabet.isalpha() == True and \
+            already_guessed_status == True and \
+            warnings_over == False):
+            print('Oops! You have already guessed this letter. You have',num_of_warnings,' warnings left:',guessed_list)
+        elif (guessed_alphabet.isalpha() == True and \
+              already_guessed_status == True and \
+              warnings_over == True):
+            print('Oops! TYou have already guessed this letter. You have no warnings left:')
+            print('so you lose a guess',guessed_list)
+            
+#This part 
+        if (guessed_alphabet.isalpha() == False and \
+            warnings_over == False):
+            print('Oops! That is not a valid letter. You have',num_of_warnings,'warnings left:',guessed_list)
+        elif (guessed_alphabet.isalpha() == False and \
+              warnings_over == True):
+            print('Oops! That is not a valid letter. You have no warnings left:')
+            print('so you lose a guess',guessed_list)
+            
         if word_is_guessed == True:
             print('Your Guess is correct you won the word was',secret_word)
-            print('Your score is',calc_score(num_of_gusses,secret_word))
-        if num_of_gusses < 0:
+            print('Your toal score for this game is',calc_score(num_of_gusses,secret_word))
+        if num_of_gusses <= 0:
             print('YOU HAVE RUN OUT OF GUSSES SO YOU LOSE THE GAME')
             print ('The word that I was thinking was',secret_word)
             break
@@ -329,7 +366,8 @@ if __name__ == "__main__":
     # To test part 2, comment out the pass line above and
     # uncomment the following two lines.
 
-    secret_word = choose_word(wordlist)
+   # secret_word = choose_word(wordlist)
+    secret_word = 'else'
     hangman(secret_word)
 
 ###############
