@@ -131,6 +131,7 @@ def get_available_letters(letters_guessed):
 def get_input(warnings,guesses,avail_alphabet,warnings_over):
     '''Function for getting user input
     '''
+    
     user_guess = input('Enter your guess ')
     user_guess = user_guess.lower()
     is_alpha = user_guess.isalpha()
@@ -263,7 +264,7 @@ def hangman(secret_word):
             print('Oops! TYou have already guessed this letter. You have no warnings left:')
             print('so you lose a guess',guessed_list)
             
-#This part 
+#This part handels the messages if the gussed word is an alaphabet
         if (guessed_alphabet.isalpha() == False and \
             warnings_over == False):
             print('Oops! That is not a valid letter. You have',num_of_warnings,'warnings left:',guessed_list)
@@ -303,6 +304,32 @@ def match_with_gaps(my_word, other_word):
         False otherwise:
     '''
     # FILL IN YOUR CODE HERE AND DELETE "pass"
+    word1 = my_word.replace(' ','')
+    word2 = other_word
+    match = False
+    length = len(word2)
+    num1 = 0
+    num2 = 0
+
+    if len(word1) == len(word2):
+        for x in range(length):
+            if word1[x] != '_':
+                num1 = word1.count(word1[x])
+                num2 = word2.count(word2[x])
+                if num1 == num2:
+                    if word1[x] == word2[x]:
+                        match = True
+                    else:
+                        match = False
+                        break
+                    
+                else:
+                    match = False
+                    break
+            elif word1[x] == '_':
+                match = True
+         
+    return match
     pass
 
 
@@ -367,9 +394,9 @@ if __name__ == "__main__":
     # uncomment the following two lines.
 
    # secret_word = choose_word(wordlist)
-    secret_word = 'else'
-    hangman(secret_word)
-
+#    secret_word = 'else'
+#    hangman(secret_word)
+    print(match_with_gaps('a_ ple','apple'))
 ###############
 
     # To test part 3 re-comment out the above lines and
