@@ -48,7 +48,9 @@ def choose_word(wordlist):
 
 # Load the list of words into the variable wordlist
 # so that it can be accessed from anywhere in the program
+global wordlist
 wordlist = load_words()
+
 
 
 def is_word_guessed(secret_word, letters_guessed):
@@ -344,8 +346,20 @@ def show_possible_matches(my_word):
              that has already been revealed.
 
     '''
+#    pass
+    ret_list = list()
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
+    for word in wordlist:
+        if match_with_gaps(my_word,word):
+            ret_list.append(word)
+    
+    if not ret_list:
+        print('No matches found')
+    ret_str = " "
+    ret_str = ret_str.join(ret_list)
+    return ret_str
+     
+
 
 
 
@@ -397,6 +411,9 @@ if __name__ == "__main__":
 #    secret_word = 'else'
 #    hangman(secret_word)
     print(match_with_gaps('a_ ple','apple'))
+    
+    print(show_possible_matches("*"))
+
 ###############
 
     # To test part 3 re-comment out the above lines and
