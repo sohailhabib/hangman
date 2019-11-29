@@ -164,6 +164,49 @@ def get_input(warnings,guesses,avail_alphabet,warnings_over):
   
     return user_guess, warnings, guesses,warnings_over
 
+def get_input_hints(warnings,guesses,avail_alphabet,warnings_over):
+    '''Function for getting user input
+    '''
+    
+    user_guess = input('Enter your guess ')
+    user_guess = user_guess.lower()
+    if user_guess == "*":
+        print(show_possible_matches(guessed_list))
+        help_req = 1
+    else:
+        help_req = 0
+    is_alpha = user_guess.isalpha()
+    already_gussed = avail_alphabet.find(user_guess)
+
+    #if user has already guessed the aplhabet then they lose a guess
+    if is_alpha == True:
+        if already_gussed == -1:
+            warnings -=1
+
+                       
+            if warnings < 0:
+                guesses -= 1
+                warnings = 0
+                warnings_over = True
+        
+    
+    if is_alpha == False:
+        if user_guess == "*":
+            warnings = warnings
+        else:
+            warnings -=1
+        
+        if warnings < 0:
+            guesses -= 1
+            warnings = 0
+            warnings_over = True
+            
+
+   
+  
+    return user_guess, warnings, guesses,warnings_over,help_req
+
+
 def calc_score(guess_remain,word):
     '''
     Function for calculating the game score
@@ -224,6 +267,7 @@ def hangman(secret_word):
         
            
         guessed.append(guessed_alphabet)
+        global guessed_list
         guessed_list = get_guessed_word(secret_word,guessed)
         word_is_guessed = is_word_guessed(secret_word,guessed)
         
@@ -391,7 +435,93 @@ def hangman_with_hints(secret_word):
     Follows the other limitations detailed in the problem write-up.
     '''
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
+    num_of_gusses = 6
+    num_of_warnings = 3
+    guessed = []
+    word_is_guessed = False
+    warnings_over = False
+    vowels = 'aeiou'
+    first_run =  True
+    print('Welcome to the game Hangman!')
+    print('I am thinking of a word that is ',len(secret_word),' letters long')
+    
+    while word_is_guessed == False:
+         
+        print('You have ', num_of_gusses,' gusses left')
+        if(first_run == True):
+            print('Remaining Warnings ', num_of_warnings,)
+            first_run = False
+            
+        available_letters = get_available_letters(guessed)
+        print('Available letters:' , available_letters)
+        guessed_alphabet, num_of_warnings, num_of_gusses, warnings_over, help_req = get_input_hints(num_of_warnings,num_of_gusses,available_letters,warnings_over)
+        
+           
+        guessed.append(guessed_alphabet)
+        global guessed_list
+        guessed_list = get_guessed_word(secret_word,guessed)
+        word_is_guessed = is_word_guessed(secret_word,guessed)
+        
+        if guessed_alphabet.isalpha() == True:
+            
+            if secret_word.find(guessed_alphabet) != -1:
+                print('Good guess: ', guessed_list)
+                print('_ _ _ _ _ _ _ _ _ _ _\n')
+                
+            elif secret_word.find(guessed_alphabet) == -1:
+                print('Oops! That is not in my word: ', guessed_list)
+                print('_ _ _ _ _ _ _ _ _ _ _\n')
+                
+                if vowels.find(guessed_alphabet) != -1:
+                    if available_letters.find(guessed_alphabet) != -1:
+                        print('You failed to guess a vowel so you lose 2 gusses')
+                        num_of_gusses -=2
+                else:
+                    if available_letters.find(guessed_alphabet) != -1:
+                        num_of_gusses -=1
+#This part handels the messages if the letter is already guessed
+#        if num_of_warnings >= 0:
+#            warnings_over = False
+#        else:
+#            warnings_over = True
+#        
+        already_guessed = available_letters.find(guessed_alphabet)
+        if already_guessed != -1:
+            already_guessed_status = False
+        elif already_guessed == -1:
+            already_guessed_status = True
+            
+        if (guessed_alphabet.isalpha() == True and \
+            already_guessed_status == True and \
+            warnings_over == False):
+            print('Oops! You have already guessed this letter. You have',num_of_warnings,' warnings left:',guessed_list)
+        elif (guessed_alphabet.isalpha() == True and \
+              already_guessed_status == True and \
+              warnings_over == True):
+            print('Oops! TYou have already guessed this letter. You have no warnings left:')
+            print('so you lose a guess',guessed_list)
+            
+#This part handels the messages if the gussed word is an alaphabet
+        if (guessed_alphabet.isalpha() == False and \
+            warnings_over == False) and \
+            help_req != 1:
+            print('Oops! That is not a valid letter. You have',num_of_warnings,'warnings left:',guessed_list)
+        elif (guessed_alphabet.isalpha() == False and \
+              warnings_over == True and \
+              help_req != 1):
+            print('Oops! That is not a valid letter. You have no warnings left:')
+            print('so you lose a guess',guessed_list)
+            
+        if word_is_guessed == True:
+            print('Your Guess is correct you won the word was',secret_word)
+            print('Your toal score for this game is',calc_score(num_of_gusses,secret_word))
+        if num_of_gusses <= 0:
+            print('YOU HAVE RUN OUT OF GUSSES SO YOU LOSE THE GAME')
+            print ('The word that I was thinking was',secret_word)
+            break
+    
+
+    
 
 
 
@@ -407,12 +537,12 @@ if __name__ == "__main__":
     # To test part 2, comment out the pass line above and
     # uncomment the following two lines.
 
-   # secret_word = choose_word(wordlist)
+    secret_word = choose_word(wordlist)
 #    secret_word = 'else'
-#    hangman(secret_word)
-    print(match_with_gaps('a_ ple','apple'))
+    hangman_with_hints(secret_word)
+#    print(match_with_gaps('a_ ple','apple'))
     
-    print(show_possible_matches("*"))
+#    print(show_possible_matches("*"))
 
 ###############
 
